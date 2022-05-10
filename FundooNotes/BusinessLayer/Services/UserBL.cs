@@ -1,9 +1,10 @@
 ﻿using BusinessLayer.Interfaces;
-using CommonLayer.Users;
+using CommonLayer;
 using RepositoryLayer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 
 namespace BusinessLayer.Services
 {
@@ -52,5 +53,22 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
+
+        public bool ChangePassword(ChangePasswordModel changepassword, string email)
+        {
+            try
+            {
+                return this.userRL.ChangePassword(changepassword, email);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+           
+
+               
+        
     }
 }

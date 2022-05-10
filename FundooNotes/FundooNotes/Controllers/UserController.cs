@@ -1,18 +1,22 @@
 ﻿using BusinessLayer.Interfaces;
-using CommonLayer.Users;
+using CommonLayer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.FundooContext;
 using System;
 using System.Linq;
+using System.Security.Claims;
 
 namespace FundooNotes.Controllers
 {
-    [ApiController]
+    [ApiController] //handle the client error bind the incoming data
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UserController : ControllerBase //provide many method and proprties to handle http req
     {
         FundooDBContext fundooDBContext;
         IUserBL userBL;
+        //constructor
         public UserController(FundooDBContext fundooDBContext, IUserBL userBL)
         {
             this.fundooDBContext = fundooDBContext;
@@ -55,7 +59,7 @@ namespace FundooNotes.Controllers
             }
         }
         [HttpPost("ForgotPassword/{email}")]
-        public IActionResult ForgotPassword(string email)
+        public ActionResult ForgotPassword(string email)
         {
             try
             {
@@ -77,6 +81,28 @@ namespace FundooNotes.Controllers
                 throw ex;
             }
         }
+        [Authorize]
+        [HttpPut("ChangePassword")]
+           
+       public IActionResult ChangePassword(ChangePasswordModel changePassword) 
+        {
+            try
+            {
+                string email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                bool result = userBL.ChangePassword(changePassword, email);
+                if (result==false)
+                {
+                    return this.BadRequest(new { success = false, message = $"changepasword not sucessful" });
+                }
+                return this.Ok(new { success = true, message = $"changepasword  sucessful" });
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
     }
 }
 
