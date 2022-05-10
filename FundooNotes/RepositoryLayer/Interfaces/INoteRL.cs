@@ -8,6 +8,6 @@ namespace RepositoryLayer.Interfaces
 {
     public interface INoteRL
     {
-        Task AddNote(NotePostModel notepostmodel, int userId);
+        Task AddNote(int userId,NotePostModel notepostmodel);
     }
 }

@@ -8,27 +8,28 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Services
 {
-    //public class NoteBL : INoteBL
+    public class NoteBL : INoteBL
 
-    //{
-    //    INoteRL noteRL;
-    //    public NoteBL(INoteRL userRL)
-    //    {
-    //        this.noteRL = userRL;
-    //    }
+    {
+        INoteRL noteRL;
+        public NoteBL(INoteRL noteRL)
+        {
+            this.noteRL = noteRL;
+        }
 
-    //    public async Task AddNote(NotePostModel notepostmodel, int userId)
-    //    {
-    //        try
-    //        {
-    //            await this.noteRL.AddNote(notepostmodel);
+        public async Task AddNote(int userId, NotePostModel notepostmodel)
+        {
+            try
+            {
+                await this.noteRL.AddNote( userId,  notepostmodel);
+            }
+            catch (Exception ex)
+            {
 
-    //        }
-    //        catch (Exception ex)
-    //        {
-
-    //            throw ex;
-    //        }
-    //    }
-    //}
+                throw ex;
+            }
+        }
+    }
 }
+
+

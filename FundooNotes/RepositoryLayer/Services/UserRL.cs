@@ -53,7 +53,7 @@ namespace RepositoryLayer.Services
         {
             try
             {
-                var result = fundooDBContext.Users.Where(u => u.Email == email && u.Password == password).FirstOrDefault();
+                var result = fundooDBContext.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
                 if (result == null)
                 {
                     return null;

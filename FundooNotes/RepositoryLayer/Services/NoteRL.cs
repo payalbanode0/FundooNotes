@@ -22,11 +22,13 @@ namespace RepositoryLayer.Services
             this.configuration = configuration;
 
         }
-        public async Task AddNote(NotePostModel notepostmodel, int userId)
+        public async Task AddNote(int userId, NotePostModel notepostmodel)
         {
             try
             {
                 Note note = new Note();
+                note.NoteId = new Note().NoteId;
+                note.UserId = userId;
                 note.Title = notepostmodel.Title;
                 note.Description = notepostmodel.Description;
                 note.colour = notepostmodel.colour;
@@ -40,10 +42,10 @@ namespace RepositoryLayer.Services
                 await fundooDBContext.SaveChangesAsync();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
     }

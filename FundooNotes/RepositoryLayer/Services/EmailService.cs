@@ -23,8 +23,8 @@ namespace RepositoryLayer.Services
                 msgObj.Body = $"<!DOCTYPE html>" +
                     "<html>" +
                     "<body style=\"background -color:#ff6347;text-align:center;\"> " +
-                    "<h1 style=\"color:#800000;\">hello payal</h1>" +
-                    "<h2 style=\"color:#ff6347;\">please click on below link to reset password.</h2>" +
+                    "<h1 style=\"color:#800000;\">Hello Payal</h1>" +
+                    "<h2 style=\"color:#ff6347;\">Please Click On Below Link To Reset Password.</h2>" +
                     "</body>" + $"www.FundooNotes.com/reset-password/{token}" +
                     "</html>";
                 client.Send(msgObj);

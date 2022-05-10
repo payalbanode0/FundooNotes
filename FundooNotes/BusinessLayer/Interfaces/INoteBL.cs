@@ -8,6 +8,6 @@ namespace BusinessLayer.Interfaces
 {
     public interface INoteBL
     {
-        Task AddNote(NotePostModel notepostmodel, int userId);
+        Task AddNote( int userId,NotePostModel notepostmodel);
     }
 }

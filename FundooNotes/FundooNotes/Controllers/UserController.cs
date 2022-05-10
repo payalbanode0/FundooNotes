@@ -49,7 +49,7 @@ namespace FundooNotes.Controllers
 
                 }
                 var result = this.userBL.LoginUser(email, password);
-                return this.Ok(new { success = true, message = $"login successfull(result)" });
+                return this.Ok(new { success = true, message = $"login successfull {result}"});
 
             }
             catch (Exception ex)
