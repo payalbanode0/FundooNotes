@@ -181,6 +181,28 @@ namespace FundooNotes.Controllers
 
         }
 
+        [Authorize]
+        [HttpPut("Reminder/{noteId}/{ReminderDate}")]
+        public async Task<ActionResult> IsReminder(int userId, int noteId, DateTime ReminderDate)
+        {
+            try
+            {
+                var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userID", StringComparison.InvariantCultureIgnoreCase));
+                int userID = Int32.Parse(userid.Value);
+                var note = fundooDBContext.Notes.FirstOrDefault(u => u.UserId == userId && u.NoteId == noteId);
+                if (note == null)
+                {
+                    return this.BadRequest(new { success = false, message = "Failed to Set ReminderDate or Id does not exists" });
+                }
+                await this.noteBL.Remainder(userId, noteId, ReminderDate);
+                return this.Ok(new { success = true, message = "ReminderDate is set successfully!!!" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }    
     
 }

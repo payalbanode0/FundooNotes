@@ -72,7 +72,7 @@ namespace BusinessLayer.Services
         {
             try
             {
-                await this.noteRL.Trash(userId, noteId);
+                await this.noteRL.Pin(userId, noteId);
             }
             catch (Exception)
             {
@@ -81,7 +81,22 @@ namespace BusinessLayer.Services
             }
         }
 
-            public async Task Trash(int userId, int noteId)
+        public async Task Remainder(int userId, int noteId, DateTime remainder)
+        {
+            try
+            {
+                await this.noteRL.Remainder(userId, noteId, remainder);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public async Task Trash(int userId, int noteId)
         {
             try
             {

@@ -203,5 +203,28 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
+
+        public async Task Remainder(int userId, int noteId, DateTime remainder)
+        {
+            try
+            {
+                var note = fundooDBContext.Notes.FirstOrDefault(u => u.UserId == userId && u.NoteId == noteId);
+                if (note != null)
+                {
+                    if (note.IsRemainder == true)
+                    {
+                        note.RemainderDate = remainder;
+                    }
+
+
+                }
+                await fundooDBContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
