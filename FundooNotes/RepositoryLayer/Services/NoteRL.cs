@@ -59,11 +59,11 @@ namespace RepositoryLayer.Services
                 if (note != null)
                 {
                     fundooDBContext.Notes.Remove(note);
-                await fundooDBContext.SaveChangesAsync();
-                    
+                    await fundooDBContext.SaveChangesAsync();
+
                 }
-                
-                
+
+
             }
             catch (Exception ex)
             {
@@ -137,9 +137,65 @@ namespace RepositoryLayer.Services
 
                 }
                 return await fundooDBContext.Notes
-                .Where(u => u.UserId== u.UserId && u.NoteId == noteId)
+                .Where(u => u.UserId == u.UserId && u.NoteId == noteId)
                 .Include(u => u.User)
                 .FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task Trash(int userId, int noteId)
+        {
+            try
+            {
+                var note = fundooDBContext.Notes.FirstOrDefault(u => u.UserId == userId && u.NoteId == noteId);
+                if (note != null)
+                {
+                    if (note.IsTrash == true)
+                    {
+                        note.IsTrash = false;
+                    }
+
+                    if (note.IsTrash == false)
+                    {
+                        note.IsTrash = true;
+                    }
+                }
+
+                await fundooDBContext.SaveChangesAsync();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task Pin(int userId, int noteId)
+        {
+            try
+            {
+                var note = fundooDBContext.Notes.FirstOrDefault(u => u.UserId == userId && u.NoteId == noteId);
+                if (note != null)
+                {
+                    if (note.IsPin == true)
+                    {
+                        note.IsPin = false;
+                    }
+
+                    if (note.IsPin == false)
+                    {
+                        note.IsPin = true;
+                    }
+                }
+
+                await fundooDBContext.SaveChangesAsync();
+
             }
             catch (Exception)
             {

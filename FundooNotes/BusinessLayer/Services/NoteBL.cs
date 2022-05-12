@@ -67,6 +67,33 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+
+        public async Task Pin(int userId, int noteId)
+        {
+            try
+            {
+                await this.noteRL.Trash(userId, noteId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+            public async Task Trash(int userId, int noteId)
+        {
+            try
+            {
+                await this.noteRL.Trash(userId, noteId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<Note> UpdateNote(int userId, int noteId, NoteUpdateModel noteUpdateModel)
         {
             try

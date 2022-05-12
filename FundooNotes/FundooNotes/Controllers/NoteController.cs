@@ -15,7 +15,7 @@ namespace FundooNotes.Controllers
     {
         FundooDBContext fundooDBContext;
         INoteBL noteBL;
-        public NoteController(INoteBL noteBL,FundooDBContext fundooDBContext)
+        public NoteController(INoteBL noteBL, FundooDBContext fundooDBContext)
         {
             this.noteBL = noteBL;
             this.fundooDBContext = fundooDBContext;
@@ -134,9 +134,53 @@ namespace FundooNotes.Controllers
                 throw ex;
             }
         }
+        [Authorize]
+        [HttpPut("IsTrash/{noteId}")]
+        public async Task<ActionResult> IsTrash(int noteId)
+        {
+            try
+            {
+                var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userID", StringComparison.InvariantCultureIgnoreCase));
+                int userId = Int32.Parse(userid.Value);
 
-    }
+                var note = fundooDBContext.Notes.FirstOrDefault(u => u.UserId == userId && u.NoteId == noteId);
+                if (note == null)
+                {
+                    return this.BadRequest(new { success = false, message = "Failed to Trash note" });
+                }
+                await this.noteBL.Trash(userId, noteId);
+                return this.Ok(new { success = true, message = "Trash successfully!!!" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
-        
+        }
+        [Authorize]
+        [HttpPut("IsPin/{noteId}")]
+        public async Task<ActionResult> IsPin(int noteId)
+        {
+            try
+            {
+                var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userID", StringComparison.InvariantCultureIgnoreCase));
+                int userId = Int32.Parse(userid.Value);
+
+                var note = fundooDBContext.Notes.FirstOrDefault(u => u.UserId == userId && u.NoteId == noteId);
+                if (note == null)
+                {
+                    return this.BadRequest(new { success = false, message = "Failed to Pin note" });
+                }
+                await this.noteBL.Pin(userId, noteId);
+                return this.Ok(new { success = true, message = "Pin Add successfully!!!" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+    }    
     
 }

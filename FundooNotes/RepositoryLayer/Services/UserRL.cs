@@ -37,6 +37,7 @@ namespace RepositoryLayer.Services
                 userdata.LastName = user.LastName;
                 userdata.Email = user.Email;
                 userdata.Password = EncryptPassword(user.Password);
+                //userdata.Password = decryptedpassword(user.Password);
                 userdata.RegisteredDate = DateTime.Now;
                 fundooDBContext.Add(userdata);
                 fundooDBContext.SaveChanges();
@@ -215,7 +216,7 @@ namespace RepositoryLayer.Services
         //        }
         //        else
         //        {
-        //            b =Convert.FromBase64String(encryptedpassword);
+        //            b = Convert.FromBase64String(encryptedpassword);
         //            decrypted = Encoding.ASCII.GetString(b);
         //            return decrypted;
         //        }
