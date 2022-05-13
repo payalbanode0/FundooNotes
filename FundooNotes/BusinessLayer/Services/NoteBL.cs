@@ -68,6 +68,21 @@ namespace BusinessLayer.Services
             }
         }
 
+        public Task<List<Note>> GetNote(int userId)
+        {
+            try
+            {
+                return this.noteRL.GetNote(userId);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
+        }
+
         public async Task Pin(int userId, int noteId)
         {
             try

@@ -2,9 +2,15 @@
 using CommonLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using RepositoryLayer.Entities;
 using RepositoryLayer.FundooContext;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
@@ -15,10 +21,15 @@ namespace FundooNotes.Controllers
     {
         FundooDBContext fundooDBContext;
         INoteBL noteBL;
-        public NoteController(INoteBL noteBL, FundooDBContext fundooDBContext)
+        private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
+
+        public NoteController(INoteBL noteBL, FundooDBContext fundooDBContext, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.noteBL = noteBL;
             this.fundooDBContext = fundooDBContext;
+            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
 
         }
         [Authorize]
@@ -203,6 +214,59 @@ namespace FundooNotes.Controllers
             }
         }
 
-    }    
-    
+        [Authorize]
+        [HttpGet("GetAllNote")]
+        public async Task<ActionResult> GetAllNote()
+        {
+            try
+            {
+                var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userID", StringComparison.InvariantCultureIgnoreCase));
+                int userId = Int32.Parse(userid.Value);
+                List<Note> result = new List<Note>();
+                result = await this.noteBL.GetNote(userId);
+                return this.Ok(new { success = true, message = $"Below are all notes", data = result });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+
+
+
+        }
+        //[HttpGet("GetAllNotesRedis")]
+        //public async Task<ActionResult> GetNote()
+        //{
+        //    try
+        //    {
+        //        string serializeNoteList;
+        //        var noteList = new List<Note>();
+        //        var redisNoteList = await distributedCache.GetAsync(key);
+        //        if (redisNoteList != null)
+        //        {
+        //            serializeNoteList = Encoding.UTF8.GetString(redisNoteList);
+        //            noteList = JsonConvert.DeserializeObject<List<Note>>(serializeNoteList);
+        //        }
+        //        else
+        //        {
+        //            noteList = await this.noteBL.GetNote();
+        //            serializeNoteList = JsonConvert.SerializeObject(noteList);
+        //            redisNoteList = Encoding.UTF8.GetBytes(serializeNoteList);
+        //            var option = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(20)).SetAbsoluteExpiration(TimeSpan.FromHours(6));
+        //        }
+        //        return this.Ok(new { success = true, message = "Get note successful!!!", data = noteList });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+
+
+    }
+            
 }
+    
+

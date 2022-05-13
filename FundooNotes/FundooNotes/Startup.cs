@@ -37,10 +37,21 @@ namespace FundooNotes
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddTransient<IUserBL, UserBL>();
+
+            services.AddMemoryCache();
+            
+        
+
+
+        //services.AddStackExchangeRedisCache(options => { options.Configuration( ["RedisCacheUrl"]) });
+
+
+        services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<INoteBL, NoteBL>();
             services.AddTransient<INoteRL, NoteRL>();
+            services.AddTransient<ILabelBL, LabelBL>();
+            services.AddTransient<ILabelRL, LabelRL>();
            services.AddDbContext<FundooDBContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:FundooDataBase"]));
             services.AddAuthentication(x =>
             {
@@ -83,6 +94,12 @@ namespace FundooNotes
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
             });
+            services.AddDistributedRedisCache(
+                options =>
+                {
+                    options.Configuration = "Localhost:6379";
+                }
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
