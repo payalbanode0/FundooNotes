@@ -1,8 +1,10 @@
 ﻿using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RepositoryLayer.Entities;
 using RepositoryLayer.FundooContext;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -71,6 +73,28 @@ namespace FundooNotes.Controllers
                 int userId = Int32.Parse(userid.Value);
                 await this.labelBL.DeleteLabel(LabelId, userId);
                 return this.Ok(new { success = true, message = $"Label Deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        
+        [Authorize]
+        [HttpGet("GetLabel")]
+        public async Task<ActionResult> GetLabel()
+        {
+            try
+            {
+                List<Label> list = new List<Label>();
+                var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
+                int userId = Int32.Parse(userid.Value);
+                list = await this.labelBL.GetLabel(userId);
+                if (list == null)
+                {
+                    return this.BadRequest(new { success = false, message = "Failed to get label" });
+                }
+                return this.Ok(new { success = true, message = $"Label get successfully", data = list });
             }
             catch (Exception ex)
             {

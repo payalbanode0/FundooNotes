@@ -12,9 +12,9 @@ namespace BusinessLayer.Interfaces
         
         
         Task AddLabel(int userId, int noteId, string LabelName);
-        // Task<List<Entities.Label>> GetLabelByuserId(int userId);
-        //Task<List<Entities.Label>> GetlabelByNoteId(int NoteId);
-        Task<RepositoryLayer.Entities.Label> UpdateLabel(int userId, int LabelId, string LabelName);
+        Task<List<Label>> GetLabel(int userId);
+        
+        Task<Label> UpdateLabel(int userId, int LabelId, string LabelName);
         Task DeleteLabel(int LabelId, int userId);
 
 

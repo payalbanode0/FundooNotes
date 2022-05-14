@@ -36,6 +36,7 @@ namespace RepositoryLayer.Services
                 userdata.FirstName = user.FirstName;
                 userdata.LastName = user.LastName;
                 userdata.Email = user.Email;
+                
                 userdata.Password = EncryptPassword(user.Password);
                 //userdata.Password = decryptedpassword(user.Password);
                 userdata.RegisteredDate = DateTime.Now;

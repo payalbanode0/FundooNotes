@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RepositoryLayer.Entities;
 using RepositoryLayer.FundooContext;
 using RepositoryLayer.Interfaces;
@@ -46,14 +47,20 @@ namespace RepositoryLayer.Services
             }
         }
 
-        public Task<List<Label>> GetLabelByuserId(int userId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<List<Label>> GetlabelByNoteId(int NoteId)
+
+        public async Task<List<Label>> GetlabelByNoteId(int NoteId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<Label> reuslt = await fundooDBContext.Labels.Where(u => u.NoteId == NoteId).Include(u => u.User).Include(u => u.NoteId).ToListAsync();
+                return reuslt;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         public async Task<Label> UpdateLabel(int userId, int LabelId, string LabelName)
@@ -97,9 +104,27 @@ namespace RepositoryLayer.Services
                 throw ex;
             }
         }
+
+        public async Task<List<Label>> GetLabel(int userId)
+        {
+            try
+            {
+                List<Label> reuslt = await fundooDBContext.Labels.Where(u => u.UserId == userId).Include(u => u.User).Include(u => u.User).ToListAsync();
+                
+                return reuslt;
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
 }
+    
+
+
 
 
 

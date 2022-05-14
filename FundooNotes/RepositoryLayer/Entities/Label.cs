@@ -16,7 +16,7 @@ namespace RepositoryLayer.Entities
         public virtual User User { get; set; }
         public int? NoteId { get; set; }
         public virtual Note note { get; set; }
-        public virtual IList<Label> Labels { get; set; }
+        
 
     }
 }
