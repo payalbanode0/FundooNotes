@@ -52,7 +52,16 @@ namespace FundooNotes
             services.AddTransient<INoteRL, NoteRL>();
             services.AddTransient<ILabelBL, LabelBL>();
             services.AddTransient<ILabelRL, LabelRL>();
-           services.AddDbContext<FundooDBContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:FundooDataBase"]));
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(
+            //    name: "AllowOrigin",
+            //  builder => {
+            //      builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            //  });
+            //});
+            services.AddCors();
+            services.AddDbContext<FundooDBContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:FundooDataBase"]));
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -112,7 +121,7 @@ namespace FundooNotes
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FundooNotes");
             });
-            app.UseAuthentication();
+            
 
             if (env.IsDevelopment())
             {
@@ -120,15 +129,23 @@ namespace FundooNotes
             }
 
             app.UseHttpsRedirection();
+            app.UseCors(builder =>
+            {
+                builder.SetIsOriginAllowed(origin => true);
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+            });
 
 
 
             app.UseRouting();
 
+           
+            app.UseAuthentication();
             app.UseAuthorization();
 
-
-
+            app.UseCors("AllowOrigin");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

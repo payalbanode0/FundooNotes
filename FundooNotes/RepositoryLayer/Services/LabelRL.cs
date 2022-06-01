@@ -49,19 +49,7 @@ namespace RepositoryLayer.Services
 
 
 
-        public async Task<List<Label>> GetlabelByNoteId(int NoteId)
-        {
-            try
-            {
-                List<Label> reuslt = await fundooDBContext.Labels.Where(u => u.NoteId == NoteId).Include(u => u.User).Include(u => u.NoteId).ToListAsync();
-                return reuslt;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-        }
+        
 
         public async Task<Label> UpdateLabel(int userId, int LabelId, string LabelName)
         {

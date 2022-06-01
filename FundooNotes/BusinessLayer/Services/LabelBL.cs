@@ -61,18 +61,7 @@ namespace BusinessLayer.Services
         }
 
        
-        public async Task<List<Label>> GetlabelByNoteId(int NoteId)
-        {
-            try
-            {
-                return await this.labelRL.GetlabelByNoteId(NoteId);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+       
         public async Task<List<Label>> GetLabel(int userId)
         {
             try

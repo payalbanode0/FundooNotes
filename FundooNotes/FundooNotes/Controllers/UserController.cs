@@ -37,24 +37,55 @@ namespace FundooNotes.Controllers
             }
         }
 
+        //[HttpPost("login/{email}/{password}")]
+        //public IActionResult LoginUser(string email, string password)
+        //{
+        //    try
+        //    {
+        //        var userdata = fundooDBContext.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+        //        if (userdata == null)
+        //        {
+        //            return this.BadRequest(new { success = false, message = $"email and password is invalid" });
+
+        //        }
+        //        var result = this.userBL.LoginUser(email, password);
+        //        return this.Ok(new { success = true, message = "login successfull", data =result });
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw ex;
+        //    }
+        //}
         [HttpPost("login/{email}/{password}")]
-        public IActionResult LoginUser(string email, string password)
+        public ActionResult LoginUser(string email, string password)
         {
             try
             {
-                var userdata = fundooDBContext.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+                var userdata = fundooDBContext.Users.FirstOrDefault(u => u.Email == email);
                 if (userdata == null)
                 {
-                    return this.BadRequest(new { success = false, message = $"email and password is invalid" });
+                    return this.BadRequest(new { success = false, message = $"email  is invalid" });
 
                 }
-                var result = this.userBL.LoginUser(email, password);
-                return this.Ok(new { success = true, message = $"login successfull {result}"});
+                //var userdata1 = fundooDBContext.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+                //if (userdata1 == null)
+                //{
+                //    return this.BadRequest(new { success = false, message = $"email and password is invalid" });
+
+                //}
+
+                string token = this.userBL.LoginUser(email, password);
+
+
+
+                return this.Ok(new { success = true, message = $"Token Generated is", data= token });
+
 
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -88,13 +119,16 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                string email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                //string email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                var currentUser = HttpContext.User;
+                int userId = Convert.ToInt32(currentUser.Claims.FirstOrDefault(c => c.Type == "UserId").Value);
+                var email = (currentUser.Claims.FirstOrDefault(c => c.Type == "Email").Value);
                 bool result = userBL.ChangePassword(changePassword, email);
                 if (result==false)
                 {
-                    return this.BadRequest(new { success = false, message = $"changepasword not sucessful" });
+                    return this.BadRequest(new { success = false, message = "changepasword not sucessful" });
                 }
-                return this.Ok(new { success = true, message = $"changepasword  sucessful" });
+                return this.Ok(new { success = true, message = "changepasword  sucessful" });
             }
             catch (Exception ex)
             {
