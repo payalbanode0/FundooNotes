@@ -1,7 +1,4 @@
-﻿using CommonLayer.Users;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CommonLayer;
 
 namespace RepositoryLayer.Interfaces
 {
@@ -11,5 +8,6 @@ namespace RepositoryLayer.Interfaces
 
         public string LoginUser(string email, string password);
         public bool ForgotPassword(string email);
+        public bool ChangePassword(ChangePasswordModel changepassword, string email);
     }
 }

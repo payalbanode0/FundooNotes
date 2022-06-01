@@ -1,4 +1,4 @@
-﻿using CommonLayer.Users;
+﻿using CommonLayer;
 using Experimental.System.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -11,10 +11,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
+
 namespace RepositoryLayer.Services
 {
+    
     public class UserRL : IUserRL
     {
+        //instances of fundoocontext message
         FundooDBContext fundooDBContext;
 
         public IConfiguration configuration { get; }
@@ -24,15 +27,20 @@ namespace RepositoryLayer.Services
             this.configuration = configuration;
 
         }
+        //method to user register detail
         public void AddUser(UserPostModel user)
         {
+            string passwordToEncrypt = string.Empty;
             try
             {
-                User userdata = new User();
+                User userdata = new User();               
                 userdata.FirstName = user.FirstName;
                 userdata.LastName = user.LastName;
                 userdata.Email = user.Email;
-                userdata.Password = user.Password;
+
+
+
+                userdata.Password = EncodePasswordToBase64(user.Password);
                 userdata.RegisteredDate = DateTime.Now;
                 fundooDBContext.Add(userdata);
                 fundooDBContext.SaveChanges();
@@ -44,24 +52,79 @@ namespace RepositoryLayer.Services
                 throw ex;
             }
         }
-        public string LoginUser(string email, string password)
+        public string EncodePasswordToBase64(string password)
         {
             try
             {
-                var result = fundooDBContext.Users.Where(u => u.Email == email && u.Password == password).FirstOrDefault();
-                if (result == null)
-                {
-                    return null;
-                }
-                return GetJWTToken(email, result.Id);
-
+                byte[] encData_byte = new byte[password.Length];
+                encData_byte = System.Text.Encoding.UTF8.GetBytes(password);
+                string encodedData = Convert.ToBase64String(encData_byte);
+                return encodedData;
             }
             catch (Exception ex)
             {
 
-                throw ex;
+                throw new Exception("Error in base64Encode" + ex.Message);
             }
         }
+
+        public string DecodeFrom64(string encodedData)
+        {
+            System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
+            System.Text.Decoder utf8Decode = encoder.GetDecoder();
+            byte[] todecode_byte = Convert.FromBase64String(encodedData);
+            int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
+            char[] decoded_char = new char[charCount];
+            utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
+            string result = new string(decoded_char);
+            return result;
+        }
+        public string LoginUser(string email, string password)
+        {
+            try
+            {
+
+                var Result = fundooDBContext.Users.FirstOrDefault(u=>u.Email==email);
+                password = DecodeFrom64(Result.Password);
+                if (Result != null)
+                {
+                   
+                        return GetJWTToken(email, Result.UserId);
+                    
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        //public string LoginUser(string email, string password)
+        //{
+        //    try
+        //    {
+        //        Linq query matches given input in database and returns that entry from the database.
+        //        var result = fundooDBContext.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+        //        if (result == null)
+        //        {
+        //            return null;
+        //        }
+
+        //        Calling Jwt Token Creation method and returning token.
+        //        return GetJWTToken(email, result.UserId);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw ex;
+        //    }
+        //}
         private static string GetJWTToken(string email, int userID)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -70,8 +133,8 @@ namespace RepositoryLayer.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("email", email),
-                    new Claim("userID",userID.ToString())
+                    new Claim("Email", email),
+                    new Claim("UserId",userID.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
 
@@ -106,7 +169,7 @@ namespace RepositoryLayer.Services
                 }
                 Message MyMessage = new Message();
                 MyMessage.Formatter = new BinaryMessageFormatter();
-                MyMessage.Body = GetJWTToken(email, userdata.Id);
+                MyMessage.Body = GetJWTToken(email, userdata.UserId);
                 MyMessage.Label = "Forgot Password Email";
                 queue.Send(MyMessage);
 
@@ -172,5 +235,36 @@ namespace RepositoryLayer.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+       
+       
+
+
+        public bool ChangePassword(ChangePasswordModel changepassword,string email)
+        {
+            try
+            {    
+                var user = fundooDBContext.Users.FirstOrDefault(u => u.Email == email);
+                if (changepassword.Password.Equals(changepassword.ConfirmPassword))
+                {
+
+
+                    user.Password = EncodePasswordToBase64(changepassword.Password);
+                    fundooDBContext.SaveChanges();
+                    return true;
+                }
+                return false; 
+                
+            }
+            
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        
     }
+
+
 }

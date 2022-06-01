@@ -4,20 +4,19 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-
 namespace RepositoryLayer.Entities
 {
-    public class User
-
+    public class Label
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public DateTime RegisteredDate { get; set; }
-        public string Password { get; set; }
+        public int LabelId { get; set; }
+        public string LabelName { get; set; }
+        public int? UserId { get; set; }
+        public virtual User User { get; set; }
+        public int? NoteId { get; set; }
+        public virtual Note note { get; set; }
+        
 
     }
 }
