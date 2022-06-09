@@ -15,7 +15,7 @@ namespace BusinessLayer.Services
         ILabelRL labelRL;
         public LabelBL(ILabelRL labelRL)
         {
-            this.labelRL = labelRL; ;
+            this.labelRL = labelRL; 
         }
 
         public async Task AddLabel(int userId, int noteId, string LabelName)
@@ -75,6 +75,18 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
+
+        public async Task createLabel(int userId, string LabelName)
+        {
+            try
+            {
+                await this.labelRL.createLabel(userId,  LabelName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
-    
 }
+    

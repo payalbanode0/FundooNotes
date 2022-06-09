@@ -111,11 +111,11 @@ namespace BusinessLayer.Services
 
         }
 
-        public async Task Trash(int userId, int noteId)
+        public async Task<Note> Trash(int userId, int noteId)
         {
             try
             {
-                await this.noteRL.Trash(userId, noteId);
+               return await this.noteRL.Trash(userId, noteId);
             }
             catch (Exception)
             {

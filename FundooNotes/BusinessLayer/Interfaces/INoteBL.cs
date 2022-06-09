@@ -17,7 +17,7 @@ namespace BusinessLayer.Interfaces
         Task ChangeColour(int userId, int noteId, string colour);
 
         Task ArchiveNote(int userId, int noteId);
-        Task Trash(int userId, int noteId);
+        Task <Note> Trash(int userId, int noteId);
         Task Pin(int userId, int noteId);
         Task Remainder(int userId, int noteId, DateTime remainder);
         Task<List<Note>> GetNote(int userId);

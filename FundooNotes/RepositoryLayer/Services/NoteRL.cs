@@ -102,7 +102,7 @@ namespace RepositoryLayer.Services
                         note.IsArchieve = false;
                     }
 
-                    if (note.IsArchieve == false)
+                    else
                     {
                         note.IsArchieve = true;
                     }
@@ -148,25 +148,26 @@ namespace RepositoryLayer.Services
             }
         }
 
-        public async Task Trash(int userId, int noteId)
+        public async Task<Note> Trash(int userId, int noteId)
         {
             try
             {
                 var note = fundooDBContext.Notes.FirstOrDefault(u => u.UserId == userId && u.NoteId == noteId);
                 if (note != null)
                 {
-                    if (note.IsTrash == true)
-                    {
-                        note.IsTrash = false;
-                    }
-
                     if (note.IsTrash == false)
                     {
                         note.IsTrash = true;
                     }
+                    else
+                    
+                    {
+                        note.IsTrash = false;
+                    }
                 }
 
                 await fundooDBContext.SaveChangesAsync();
+                return await fundooDBContext.Notes.Where(a => a.NoteId == noteId).FirstOrDefaultAsync();
 
             }
             catch (Exception)

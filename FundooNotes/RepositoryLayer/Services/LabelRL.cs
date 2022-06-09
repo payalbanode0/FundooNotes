@@ -107,6 +107,27 @@ namespace RepositoryLayer.Services
                 throw ex;
             }
         }
+
+        public async Task createLabel(int userId, string LabelName)
+        {
+            try
+            {
+                var user = fundooDBContext.Users.FirstOrDefault(u => u.UserId == userId);
+                
+                Label label = new Label
+                {
+                    User = user,
+                   
+                };
+                label.LabelName = LabelName;
+                fundooDBContext.Labels.Add(label);
+                await fundooDBContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
 }

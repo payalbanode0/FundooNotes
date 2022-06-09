@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace FundooNotes.Controllers
 {
     [ApiController]
-    [Route("Controller")]
+    [Route("[Controller]")]
     public class NoteController : ControllerBase
     {
         FundooDBContext fundooDBContext;
@@ -33,7 +33,7 @@ namespace FundooNotes.Controllers
 
         }
         [Authorize]
-        [HttpPost]
+        [HttpPost("AddNote")]
         public async Task<ActionResult> AddNote(NotePostModel notePostModel)
         {
             try

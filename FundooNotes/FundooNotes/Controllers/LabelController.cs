@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace FundooNotes.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class LabelController : ControllerBase
     {
@@ -33,6 +33,22 @@ namespace FundooNotes.Controllers
                 int userId = Int32.Parse(userid.Value);
                 await this.labelBL.AddLabel(userId, NoteId, LabelName);
                 return this.Ok(new { success = true, message = $"Label added successfully" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [Authorize]
+        [HttpPost("createLabel/{LabelName}")]
+        public async Task<ActionResult> createLabel(string LabelName)
+        {
+            try
+            {
+                var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
+                int userId = Int32.Parse(userid.Value);
+                await this.labelBL.createLabel(userId, LabelName);
+                return this.Ok(new { success = true, message = $"Label created successfully" });
             }
             catch (Exception ex)
             {
